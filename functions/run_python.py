@@ -3,7 +3,6 @@ import subprocess
 
 
 def run_python_file(working_directory, file_path, args=[]):
-
     abs_working_dir = os.path.abspath(working_directory)
     target_file = os.path.abspath(os.path.join(working_directory, file_path))
     if not target_file.startswith(abs_working_dir):
@@ -14,14 +13,18 @@ def run_python_file(working_directory, file_path, args=[]):
 
     try:
         completed_process = subprocess.run(
-            target_file, capture_output=True, cwd=working_directory, timeout=30, **args
+            ["python", target_file] + args,
+            capture_output=True,
+            cwd=working_directory,
+            timeout=30,
+            text=True,
         )
 
         print(f"STDOUT: {completed_process.stdout}")
         print(f"STDERR: {completed_process.stderr}")
         if completed_process.returncode != 0:
             print(f"Process exited with code: {completed_process.returncode}")
-        if completed_process.stdout and completed_process.stderr == None:
-            return f"No output produced"
+        if completed_process.stdout is None and completed_process.stderr is None:
+            return "No output produced"
     except Exception as e:
-        f"Error: executing Python file: {e}"
+        return f"Error: executing Python file: {e}"
