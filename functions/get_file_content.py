@@ -1,4 +1,5 @@
 import os
+from google.genai import types
 
 from .config import MAX_CHARS
 
@@ -34,3 +35,18 @@ def get_file_content(working_directory, file_path):
         return f"Error: {e}"
 
     return file_content_string
+
+
+schema_get_file_content = types.FunctionDeclaration(
+    name="get_file_content",
+    description="Returns the contents of a single file",
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "directory": types.Schema(
+                type=types.Type.STRING,
+                description="The directory to list the contents of the files from.",
+            ),
+        },
+    ),
+)
